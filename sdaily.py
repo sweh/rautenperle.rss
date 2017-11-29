@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import urllib.request
+import hashlib
 
 XML = """
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -19,6 +20,12 @@ XML_ITEM = """
       <link>{link}</link>
       <description>{description}</description>
     </item>"""
+
+
+def get_id(string):
+    m = hashlib.md5()
+    m.update(string.encode('utf-8'))
+    return m.hexdigest()
 
 
 def generate():
@@ -42,8 +49,8 @@ def generate():
         sitems += XML_ITEM.format(title=title, link=url, description=preview)
     # KURZMELDUNGEN
     for item in soup.find('amp-accordion').find_all('h3'):
-        url = 'https://daily.spiegel.de/'
         title = item.contents[0]
+        url = 'https://daily.spiegel.de/#' + get_id(title)
         preview = ' '.join(n.contents[0] for n in item.parent.parent.parent.find_all('p'))
         sitems += XML_ITEM.format(title=title, link=url, description=preview)
     print(XML.format(items=sitems))
