@@ -42,7 +42,7 @@ def generate():
         sitems += XML_ITEM.format(title=title, link=url, description=preview)
     # KURZMELDUNGEN
     for item in soup.find('amp-accordion').find_all('h3'):
-        url = ''
+        url = 'https://daily.spiegel.de/'
         title = item.contents[0]
         preview = ' '.join(n.contents[0] for n in item.parent.parent.parent.find_all('p'))
         sitems += XML_ITEM.format(title=title, link=url, description=preview)
