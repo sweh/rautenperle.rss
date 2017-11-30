@@ -32,29 +32,33 @@ def get_id(string):
     return m.hexdigest()
 
 
-def get_mercury_url(url):
+def get_full_preview(url):
     config = configparser.ConfigParser()
     config.read('config.ini')
+
+    MAPIKEY = config['mercury']['apikey']
+    mercury = ParserAPI(api_key=MAPIKEY)
+
     plain_cookie = config['spiegel']['plain_cookie']
+    deployment_path = config['spiegel']['deployment_path']
 
     cj = requests.utils.cookiejar_from_dict(dict(p.split('=') for p in plain_cookie.split('; ')))
     sess = requests.Session()
     sess.cookies = cj
 
     html = sess.get(url).text
-    id = url.split('/')[-1]
+    id = url.split('/')[-1] + '.html'
 
-    with open(id, 'w') as f:
+    with open(os.path.join(deployment_path, id), 'w') as f:
         f.write(html)
 
-    return id
+    p = mercury.parse('https://www.wehrmann.it/sdaily/' + id)
+    os.remove(os.path.join(deployment_path, id))
+
+    return p.content
 
 
 def generate():
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-    MAPIKEY = config['mercury']['apikey']
-    mercury = ParserAPI(api_key=MAPIKEY)
     fp = urllib.request.urlopen("http://daily.spiegel.de")
     mybytes = fp.read()
     html = mybytes.decode("utf8")
@@ -65,10 +69,8 @@ def generate():
         try:
             url = item.attrs['href']
             title = item.find('h2').contents[0] + ' - ' + item.find('h3').contents[0]
-            murl = get_mercury_url(url)
-            p = mercury.parse('https://www.wehrmann.it/' + murl)
-            os.remove(murl)
-            preview = p.content or item.find('main').find('div').contents[0].strip()
+            full_preview = get_full_preview(url)
+            preview = full_preview or item.find('main').find('div').contents[0].strip()
             items[url] = (title, preview)
         except Exception:
             continue

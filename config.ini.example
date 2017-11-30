@@ -2,4 +2,5 @@
 apikey = XXXXXXXX
 
 [spiegel]
+deployment_path = XXXXXXXX
 plain_cookie = XXXXXXXXX
