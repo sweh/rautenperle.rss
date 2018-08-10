@@ -69,7 +69,8 @@ def generate():
         try:
             url = item.attrs['href']
             title = item.find('h2').contents[0] + ' - ' + item.find('h3').contents[0]
-            full_preview = get_full_preview(url)
+            # full_preview = get_full_preview(url)
+            full_preview = None
             preview = full_preview or item.find('main').find('div').contents[0].strip()
             items[url] = (title, preview)
         except Exception:
