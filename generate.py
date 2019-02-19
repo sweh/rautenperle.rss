@@ -25,7 +25,7 @@ XML_ITEM = """
 
 def get_json(url):
     return json.loads(
-        subprocess.Popen(f"mercury-parser {url}", shell=True, stdout=subprocess.PIPE).stdout.read())
+        subprocess.Popen(f"/usr/local/bin/mercury-parser {url}", shell=True, stdout=subprocess.PIPE).stdout.read())
 
 def generate():
     fp = urllib.request.urlopen("http://www.rautenperle.com")
