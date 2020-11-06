@@ -17,7 +17,7 @@ jobs:
       with:
         node-version: '12'
     - name: Install mercury-parser
-      run: npm install @postlight/mercury-parser
+      run: npm install -g @postlight/mercury-parser
     - name: Set up Python 3.7
       uses: actions/setup-python@v1
       with:
