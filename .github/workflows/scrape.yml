@@ -12,10 +12,12 @@ jobs:
     steps:
     - name: Check out this repo
       uses: actions/checkout@v2
-    - name: Install mercury-parser
-      uses: borales/actions-yarn@v2.0.0
+    - name: Setup node
+      uses: actions/setup-node@v2
       with:
-        cmd: global add @postlight/mercury-parser
+        node-version: '12'
+    - name: Install mercury-parser
+      run: npm install @postlight/mercury-parser
     - name: Set up Python 3.7
       uses: actions/setup-python@v1
       with:
