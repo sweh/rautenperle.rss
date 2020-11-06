@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import urllib.request
 import subprocess
 import json
-import re
+import os
 
 XML = """\
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -32,9 +32,19 @@ XML_ITEM = """
 # <pubDate>Tue, 27 Oct 2020 12:18:16 +0000</pubDate>
 GUIDS = []
 
+
 def get_json(url):
+    path = os.path.join(
+        os.environ.get('GITHUB_WORKSPACE', ''),
+        'rautenperle_date.js'
+    )
     return json.loads(
-        subprocess.Popen(f"/usr/bin/mercury-parser {url} --add-extractor /home/sweh/rautenperle.rss/rautenperle_date.js", shell=True, stdout=subprocess.PIPE).stdout.read())
+        subprocess.Popen(
+            f"mercury-parser {url} --add-extractor {path}",
+            shell=True,
+            stdout=subprocess.PIPE).stdout.read()
+        )
+
 
 def generate():
     fp = urllib.request.urlopen("http://www.rautenperle.com")
@@ -49,7 +59,9 @@ def generate():
     items = XML_ITEM.format(
         title=storyelem.find('span').contents[0].strip().replace('&', 'und'),
         link='http://www.rautenperle.com' + storyelem.attrs['href'],
-        lead_image_url=p.get('lead_image_url', 'https://www.wehrmann.it/rautenperle.jpg'),
+        lead_image_url=p.get(
+            'lead_image_url', 'https://www.wehrmann.it/rautenperle.jpg'
+        ),
         description=p['excerpt'],
         date=p['date_published'],
         content=p['content'])
@@ -65,7 +77,9 @@ def generate():
             items += XML_ITEM.format(
                 title=title,
                 link=url,
-                lead_image_url=p.get('lead_image_url', 'https://www.wehrmann.it/rautenperle.jpg'),
+                lead_image_url=p.get(
+                    'lead_image_url', 'https://www.wehrmann.it/rautenperle.jpg'
+                ),
                 description=p['excerpt'],
                 date=p['date_published'],
                 content=p['content'])
