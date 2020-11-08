@@ -12,7 +12,7 @@ XML = """\
     <title>rautenperle.com</title>
     <link>https://www.rautenperle.com</link>
     <description>Mein Schatz</description>
-    <atom:link href="https://www.wehrmann.it/rautenperle.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://raw.githubusercontent.com/sweh/rautenperle.rss/master/rautenperle.xml" rel="self" type="application/rss+xml" />
     {items}
   </channel>
 </rss>"""
