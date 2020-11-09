@@ -12,7 +12,7 @@ XML = """\
     <title>rautenperle.com</title>
     <link>https://www.rautenperle.com</link>
     <description>Mein Schatz</description>
-    <atom:link href="https://raw.githubusercontent.com/sweh/rautenperle.rss/master/rautenperle.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>{last_build_date}</lastBuildDate>
     {items}
   </channel>
 </rss>"""
@@ -56,6 +56,7 @@ def generate():
     url = 'http://www.rautenperle.com' + storyelem.attrs['href']
     p = get_json(url)
     GUIDS.append(url)
+    last_build_date = p['date_published']
     items = XML_ITEM.format(
         title=storyelem.find('span').contents[0].strip().replace('&', 'und'),
         link='http://www.rautenperle.com' + storyelem.attrs['href'],
@@ -85,7 +86,7 @@ def generate():
                 content=p['content'])
         except Exception:
             continue
-    print(XML.format(items=items))
+    print(XML.format(last_build_date=last_build_date, items=items))
 
 
 generate()
